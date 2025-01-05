@@ -19,3 +19,12 @@ model User {
   password  String
   createdAt DateTime @default(now())
 }
+
+model Quiz {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  options     String[] // Array of options or answers
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
