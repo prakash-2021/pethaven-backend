@@ -24,6 +24,7 @@ export const authenticateToken = async (
 
   try {
     const decoded = jwt.verify(token, SECRET) as JwtPayload;
+
     ctx.state.user = decoded;
     await next();
   } catch (err) {
