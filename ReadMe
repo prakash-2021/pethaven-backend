@@ -1,0 +1,15 @@
+✅ 3. Run the Migration
+(a) First-Time Migration (Initial Setup)
+If it's the first migration (after defining your models in prisma/schema.prisma), run:
+
+npx prisma migrate dev --name init
+🔹 Replace init with a relevant name (e.g., create_users_table).
+
+npx prisma migrate dev --name update
+✅ 4. Reset the Database (If Needed)
+
+npx prisma migrate reset
+Press y when prompted.
+
+For seeding
+npx prisma db seed

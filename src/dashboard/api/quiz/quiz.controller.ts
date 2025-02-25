@@ -1,95 +1,77 @@
 import { Context } from "koa";
-import { db } from "../../../_shared/config/prisma";
+import {
+  createQuizQuestionService,
+  deleteQuizQuestionService,
+  getAllQuizQuestionsService,
+  getQuizQuestionByIdService,
+  updateQuizQuestionService,
+} from "./quiz.service";
 
-// Types for request and response
-interface QuizRequestBody {
-  title: string;
-  description?: string | null;
-  options: string[];
+interface QuizQuestionService {
+  questionText: string;
 }
 
-interface QuizResponse {
-  id: number;
-  title: string;
-  description?: string | null;
-  options: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Create a new quiz question
+export const createQuizQuestion = async (ctx: Context): Promise<void> => {
+  const { questionText } = ctx.request.body as QuizQuestionService;
 
-// Create a new quiz
-export const createQuiz = async (ctx: Context): Promise<void> => {
-  const { title, description, options } = ctx.request.body as QuizRequestBody;
-
-  // Validate options
-  if (!options || !Array.isArray(options) || options.length === 0) {
-    ctx.status = 400;
-    ctx.body = { error: "Options must be a non-empty array" };
-    return;
+  if (!questionText || questionText.trim() === "") {
+    ctx.throw(400, "Question text is required.");
   }
 
-  const quiz: QuizResponse = await db.quiz.create({
-    data: { title, description, options },
-  });
+  const question = await createQuizQuestionService({ questionText });
 
   ctx.status = 201;
-  ctx.body = { message: "Quiz created successfully", quiz };
+  ctx.body = { message: "Quiz question created successfully", question };
 };
 
-// Get all quizzes
-export const getAllQuizzes = async (ctx: Context): Promise<void> => {
-  const quizzes: QuizResponse[] = await db.quiz.findMany();
+// Get all quiz questions
+export const getAllQuizQuestions = async (ctx: Context): Promise<void> => {
+  const questions = await getAllQuizQuestionsService();
   ctx.status = 200;
-  ctx.body = quizzes;
+  ctx.body = questions;
 };
 
-// Get a quiz by ID
-export const getQuizById = async (ctx: Context): Promise<void> => {
-  const { id } = ctx.params;
+// Get a single quiz question by ID
+export const getQuizQuestionById = async (ctx: Context): Promise<void> => {
+  const { questionId } = ctx.params;
 
-  const quiz: QuizResponse | null = await db.quiz.findUnique({
-    where: { id: parseInt(id, 10) },
-  });
+  if (!questionId) ctx.throw(400, "Question ID is required");
 
-  if (!quiz) {
-    ctx.status = 404;
-    ctx.body = { error: "Quiz not found" };
-    return;
+  const question = await getQuizQuestionByIdService(questionId);
+
+  if (!question) ctx.throw(404, "Quiz question not found");
+
+  ctx.status = 200;
+  ctx.body = question;
+};
+
+// Update a quiz question
+export const updateQuizQuestion = async (ctx: Context): Promise<void> => {
+  const { questionId } = ctx.params;
+  const { questionText } = ctx.request.body as QuizQuestionService;
+
+  if (!questionId) ctx.throw(400, "Question ID is required");
+  if (!questionText || questionText.trim() === "") {
+    ctx.throw(400, "Question text cannot be empty.");
   }
 
-  ctx.status = 200;
-  ctx.body = quiz;
-};
-
-// Update a quiz
-export const updateQuiz = async (ctx: Context): Promise<void> => {
-  const { id } = ctx.params;
-  const { title, description, options } = ctx.request.body as QuizRequestBody;
-
-  // Validate options if provided
-  if (options && (!Array.isArray(options) || options.length === 0)) {
-    ctx.status = 400;
-    ctx.body = { error: "Options must be a non-empty array" };
-    return;
-  }
-
-  const updatedQuiz: QuizResponse = await db.quiz.update({
-    where: { id: parseInt(id, 10) },
-    data: { title, description, options },
+  const updatedQuestion = await updateQuizQuestionService(questionId, {
+    questionText,
   });
 
   ctx.status = 200;
-  ctx.body = { message: "Quiz updated successfully", updatedQuiz };
+  ctx.body = { message: "Quiz question updated successfully", updatedQuestion };
 };
 
-// Delete a quiz
-export const deleteQuiz = async (ctx: Context): Promise<void> => {
-  const { id } = ctx.params;
+// Delete a quiz question
+export const deleteQuizQuestion = async (ctx: Context): Promise<void> => {
+  const { questionId } = ctx.params;
 
-  await db.quiz.delete({
-    where: { id: parseInt(id, 10) },
-  });
+  if (!questionId) ctx.throw(400, "Question ID is required");
+
+  const deleted = await deleteQuizQuestionService(questionId);
 
   ctx.status = 200;
-  ctx.body = { message: "Quiz deleted successfully" };
+  ctx.body = { message: "Quiz question deleted successfully" };
 };

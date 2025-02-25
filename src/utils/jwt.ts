@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 interface Payload {
-  userId: number;
+  userId: string;
 }
 
 export const generateToken = (payload: Payload): string => {

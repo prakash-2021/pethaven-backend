@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,19 +7,116 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum AdoptionStatus {
+  AVAILABLE
+  ADOPTED
+  PENDING
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  userId      String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String   @unique
+  password    String
+  phoneNumber String   @unique
+  address     String?
+  dateOfBirth DateTime
+  createdAt   DateTime @default(now())
+
+  adoptions       Adoption[]
+  strayDogReports StrayDogReport[]
+}
+
+model Pet {
+  petId          String         @id @default(uuid())
+  name           String
+  species        String
+  breed          String
+  age            Int
+  gender         Gender
+  size           PetSize
+  color          String
+  healthStatus   String
+  adoptionStatus AdoptionStatus
+  addedAt        DateTime       @default(now())
+
+  adoptions         Adoption[]
+  answerPetMappings AnswerPetMapping[]
+}
+
+model QuizQuestion {
+  questionId   String   @id @default(uuid())
+  questionText String
+  createdAt    DateTime @default(now())
+
+  answers QuizAnswer[]
+}
+
+model QuizAnswer {
+  answerId   String   @id @default(uuid())
+  questionId String
+  answerText String
+  createdAt  DateTime @default(now())
+
+  question          QuizQuestion       @relation(fields: [questionId], references: [questionId], onDelete: Cascade)
+  answerPetMappings AnswerPetMapping[]
+}
+
+model Adoption {
+  adoptionId     String   @id @default(uuid())
+  userId         String
+  petId          String
+  adoptionDate   DateTime @default(now())
+  adoptionStatus String
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  pet  Pet  @relation(fields: [petId], references: [petId], onDelete: Cascade)
+}
+
+model StrayDogReport {
+  reportId    String   @id @default(uuid())
+  userId      String
+  location    String
+  description String
+  reportDate  DateTime @default(now())
+  status      String
+  image       String?
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+model Admin {
+  adminId   String   @id @default(uuid())
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  addedMappings AnswerPetMapping[]
 }
 
-model Quiz {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  options     String[] // Array of options or answers
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model AnswerPetMapping {
+  id             String   @id @default(uuid())
+  answerId       String
+  petId          String
+  addedByAdminId String
+  addedAt        DateTime @default(now())
+
+  answer       QuizAnswer @relation(fields: [answerId], references: [answerId], onDelete: Cascade)
+  pet          Pet        @relation(fields: [petId], references: [petId], onDelete: Cascade)
+  addedByAdmin Admin      @relation(fields: [addedByAdminId], references: [adminId], onDelete: Cascade)
+
+  @@unique([answerId, petId]) // Prevent duplicate mappings
 }
- 
