@@ -52,6 +52,7 @@ model Pet {
   healthStatus   String
   adoptionStatus AdoptionStatus
   addedAt        DateTime       @default(now())
+  images         String[]
 
   adoptions         Adoption[]
   answerPetMappings AnswerPetMapping[]

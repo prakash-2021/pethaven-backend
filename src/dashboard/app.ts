@@ -6,6 +6,7 @@ import {
   notFoundHandler,
 } from "../_shared/middlewares/errorHandler";
 import authRoutes from "./api/accounts/accounts.router";
+import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
 
 const app = new Koa();
@@ -32,6 +33,9 @@ app.use(authRoutes.allowedMethods());
 
 app.use(quizRouter.routes());
 app.use(quizRouter.allowedMethods());
+
+app.use(petRouter.routes());
+app.use(petRouter.allowedMethods());
 
 app.use(notFoundHandler);
 

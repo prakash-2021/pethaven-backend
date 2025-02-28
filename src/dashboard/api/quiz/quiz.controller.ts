@@ -1,4 +1,4 @@
-import { Context } from "koa";
+import { ParameterizedContext } from "koa";
 import {
   createQuizQuestionService,
   deleteQuizQuestionService,
@@ -12,7 +12,9 @@ interface QuizQuestionService {
 }
 
 // Create a new quiz question
-export const createQuizQuestion = async (ctx: Context): Promise<void> => {
+export const createQuizQuestion = async (
+  ctx: ParameterizedContext<any, any>
+): Promise<void> => {
   const { questionText } = ctx.request.body as QuizQuestionService;
 
   if (!questionText || questionText.trim() === "") {
@@ -20,20 +22,23 @@ export const createQuizQuestion = async (ctx: Context): Promise<void> => {
   }
 
   const question = await createQuizQuestionService({ questionText });
-
   ctx.status = 201;
   ctx.body = { message: "Quiz question created successfully", question };
 };
 
 // Get all quiz questions
-export const getAllQuizQuestions = async (ctx: Context): Promise<void> => {
+export const getAllQuizQuestions = async (
+  ctx: ParameterizedContext<any, any>
+): Promise<void> => {
   const questions = await getAllQuizQuestionsService();
   ctx.status = 200;
   ctx.body = questions;
 };
 
 // Get a single quiz question by ID
-export const getQuizQuestionById = async (ctx: Context): Promise<void> => {
+export const getQuizQuestionById = async (
+  ctx: ParameterizedContext<any, any>
+): Promise<void> => {
   const { questionId } = ctx.params;
 
   if (!questionId) ctx.throw(400, "Question ID is required");
@@ -47,7 +52,9 @@ export const getQuizQuestionById = async (ctx: Context): Promise<void> => {
 };
 
 // Update a quiz question
-export const updateQuizQuestion = async (ctx: Context): Promise<void> => {
+export const updateQuizQuestion = async (
+  ctx: ParameterizedContext<any, any>
+): Promise<void> => {
   const { questionId } = ctx.params;
   const { questionText } = ctx.request.body as QuizQuestionService;
 
@@ -65,7 +72,9 @@ export const updateQuizQuestion = async (ctx: Context): Promise<void> => {
 };
 
 // Delete a quiz question
-export const deleteQuizQuestion = async (ctx: Context): Promise<void> => {
+export const deleteQuizQuestion = async (
+  ctx: ParameterizedContext<any, any>
+): Promise<void> => {
   const { questionId } = ctx.params;
 
   if (!questionId) ctx.throw(400, "Question ID is required");

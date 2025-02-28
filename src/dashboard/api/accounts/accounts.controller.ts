@@ -1,4 +1,4 @@
-import { Context } from "koa";
+import { ParameterizedContext } from "koa";
 import { loginService, signupService } from "./accounts.service";
 
 interface AuthRequestBody {
@@ -6,13 +6,13 @@ interface AuthRequestBody {
   password: string;
 }
 
-export const signup = async (ctx: Context): Promise<void> => {
+export const signup = async (ctx: ParameterizedContext<any, any>) => {
   const { email, password } = ctx.request.body as AuthRequestBody;
   ctx.body = await signupService({ email, password });
   ctx.status = 201;
 };
 
-export const login = async (ctx: Context): Promise<void> => {
+export const login = async (ctx: ParameterizedContext<any, any>) => {
   const { email, password } = ctx.request.body as AuthRequestBody;
   ctx.body = await loginService({ email, password });
   ctx.status = 200;
