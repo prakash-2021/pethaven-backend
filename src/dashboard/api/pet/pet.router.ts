@@ -1,4 +1,5 @@
 import Router from "koa-router";
+import { validate } from "../../../_shared/middlewares";
 import upload from "../../../_shared/middlewares/uploadMiddleware";
 import {
   createPet,
@@ -8,6 +9,7 @@ import {
   storeImages,
   updatePet,
 } from "./pet.controller";
+import { petSchema } from "./pet.schema";
 
 const petRouter = new Router({
   prefix: "/api/pet",
@@ -15,10 +17,10 @@ const petRouter = new Router({
 
 // Define routes
 petRouter.post("/uploads", upload.array("images", 3), storeImages);
-petRouter.post("/", createPet); // Create quiz
+petRouter.post("/", validate(petSchema), createPet); // Create quiz
 petRouter.get("/", getAllPets); // Get all quizzes
-petRouter.get("/:id", getPetById); // Get quiz by ID
-petRouter.put("/:id", updatePet); // Update quiz
-petRouter.delete("/:id", deletePet); // Delete quiz
+petRouter.get("/:petId", getPetById); // Get quiz by ID
+petRouter.put("/:petId", validate(petSchema), updatePet); // Update quiz
+petRouter.delete("/:petId", deletePet); // Delete quiz
 
 export default petRouter;

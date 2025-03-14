@@ -1,5 +1,6 @@
 import { JsonWebTokenError } from "jsonwebtoken";
 import type { Context } from "koa";
+import { ZodError } from "zod";
 import { AppError } from "../exceptions";
 
 export const notFoundHandler = (ctx: Context) => {
@@ -24,6 +25,9 @@ export const errorHandler = async (ctx: Context, err: any) => {
 
     ctx.status = 401;
     ctx.body = { message, details: rest };
+  } else if (err instanceof ZodError) {
+    ctx.status = 400;
+    ctx.body = { message: "zod", details: err.issues };
   } else {
     // TODO: report to Sentry or setup alerts
     ctx.status = 500;

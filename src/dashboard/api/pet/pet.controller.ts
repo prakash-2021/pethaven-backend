@@ -23,7 +23,7 @@ export const storeImages = async (ctx: Context, next: Next) => {
     ctx.request.files.map(async (file) => {
       const { secure_url, created_at } = await cloudinaryUpload(
         file.buffer,
-        process.env.CLOUDINARY_FOLDER || "fyp"
+        (process.env.CLOUDINARY_FOLDER as string) + "/pets"
       );
 
       return { secure_url, created_at };
@@ -49,21 +49,6 @@ export const createPet = async (ctx: ParameterizedContext<any, any>) => {
     images,
   } = ctx.request.body as PetRequestBody;
 
-  if (
-    !name ||
-    !species ||
-    !breed ||
-    !age ||
-    !gender ||
-    !size ||
-    !color ||
-    !healthStatus ||
-    !adoptionStatus
-  ) {
-    ctx.throw(400, "All pet fields are required.");
-    2;
-  }
-
   const pet = await createPetService({
     name,
     species,
@@ -83,7 +68,7 @@ export const createPet = async (ctx: ParameterizedContext<any, any>) => {
 
 // Get all pets
 export const getAllPets = async (ctx: ParameterizedContext<any, any>) => {
-  const pets = await getAllPetsService();
+  const pets = await getAllPetsService(ctx);
   ctx.status = 200;
   ctx.body = pets;
 };
