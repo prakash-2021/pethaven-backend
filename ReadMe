@@ -13,3 +13,24 @@ Press y when prompted.
 
 For seeding
 npx prisma db seed
+
+
+
+
+<!-- After updating prisma -->
+
+Run Prisma Migrate (or db push)
+Depending on your environment:
+
+In development (recommended):
+
+npx prisma migrate dev --name added-breed-to-pet
+This creates a new migration, updates your database schema, and regenerates Prisma Client.
+
+If you don’t want to keep migration history (e.g., in early prototyping):
+
+npx prisma db push
+Regenerate Prisma Client (if not already done)
+Sometimes needed separately:
+
+npx prisma generate

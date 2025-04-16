@@ -39,11 +39,11 @@ export const getAllQuizQuestions = async (
 export const getQuizQuestionById = async (
   ctx: ParameterizedContext<any, any>
 ): Promise<void> => {
-  const { questionId } = ctx.params;
+  const { id } = ctx.params;
 
-  if (!questionId) ctx.throw(400, "Question ID is required");
+  if (!id) ctx.throw(400, "Question ID is required");
 
-  const question = await getQuizQuestionByIdService(questionId);
+  const question = await getQuizQuestionByIdService(id);
 
   if (!question) ctx.throw(404, "Quiz question not found");
 
@@ -55,15 +55,15 @@ export const getQuizQuestionById = async (
 export const updateQuizQuestion = async (
   ctx: ParameterizedContext<any, any>
 ): Promise<void> => {
-  const { questionId } = ctx.params;
+  const { id } = ctx.params;
   const { questionText } = ctx.request.body as QuizQuestionService;
 
-  if (!questionId) ctx.throw(400, "Question ID is required");
+  if (!id) ctx.throw(400, "Question ID is required");
   if (!questionText || questionText.trim() === "") {
     ctx.throw(400, "Question text cannot be empty.");
   }
 
-  const updatedQuestion = await updateQuizQuestionService(questionId, {
+  const updatedQuestion = await updateQuizQuestionService(id, {
     questionText,
   });
 
@@ -75,11 +75,11 @@ export const updateQuizQuestion = async (
 export const deleteQuizQuestion = async (
   ctx: ParameterizedContext<any, any>
 ): Promise<void> => {
-  const { questionId } = ctx.params;
+  const { id } = ctx.params;
 
-  if (!questionId) ctx.throw(400, "Question ID is required");
+  if (!id) ctx.throw(400, "Question ID is required");
 
-  const deleted = await deleteQuizQuestionService(questionId);
+  const deleted = await deleteQuizQuestionService(id);
 
   ctx.status = 200;
   ctx.body = { message: "Quiz question deleted successfully" };

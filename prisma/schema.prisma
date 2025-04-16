@@ -26,15 +26,17 @@ enum AdoptionStatus {
 }
 
 model User {
-  userId      String   @id @default(uuid())
-  firstName   String
-  lastName    String
-  email       String   @unique
-  password    String
-  phoneNumber String   @unique
-  address     String?
-  dateOfBirth DateTime
-  createdAt   DateTime @default(now())
+  userId            String   @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String   @unique
+  password          String
+  phoneNumber       String
+  address           String?
+  dateOfBirth       DateTime
+  createdAt         DateTime @default(now())
+  verificationToken String   @default("")
+  verified          Boolean  @default(false)
 
   adoptions       Adoption[]
   strayDogReports StrayDogReport[]
@@ -104,20 +106,16 @@ model Admin {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-
-  addedMappings AnswerPetMapping[]
 }
 
 model AnswerPetMapping {
-  id             String   @id @default(uuid())
-  answerId       String
-  petId          String
-  addedByAdminId String
-  addedAt        DateTime @default(now())
+  id       String   @id @default(uuid())
+  answerId String
+  petId    String
+  addedAt  DateTime @default(now())
 
-  answer       QuizAnswer @relation(fields: [answerId], references: [answerId], onDelete: Cascade)
-  pet          Pet        @relation(fields: [petId], references: [petId], onDelete: Cascade)
-  addedByAdmin Admin      @relation(fields: [addedByAdminId], references: [adminId], onDelete: Cascade)
+  answer QuizAnswer @relation(fields: [answerId], references: [answerId], onDelete: Cascade)
+  pet    Pet        @relation(fields: [petId], references: [petId], onDelete: Cascade)
 
   @@unique([answerId, petId]) // Prevent duplicate mappings
 }

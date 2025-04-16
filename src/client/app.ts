@@ -5,8 +5,8 @@ import {
   errorHandler,
   notFoundHandler,
 } from "../_shared/middlewares/errorHandler";
-import authRoutes from "./api/accounts/accounts.router";
 import quizAnswerRouter from "./api/answer/answer.router";
+import userRouter from "./api/auth/auth.router";
 import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
 
@@ -29,17 +29,17 @@ app.use(bodyParser());
 app.use(cors());
 
 // Routes
-app.use(authRoutes.routes());
-app.use(authRoutes.allowedMethods());
-
-app.use(quizRouter.routes());
-app.use(quizRouter.allowedMethods());
-
 app.use(petRouter.routes());
 app.use(petRouter.allowedMethods());
 
 app.use(quizAnswerRouter.routes());
 app.use(quizAnswerRouter.allowedMethods());
+
+app.use(quizRouter.routes());
+app.use(quizRouter.allowedMethods());
+
+app.use(userRouter.routes());
+app.use(userRouter.allowedMethods());
 
 app.use(notFoundHandler);
 
