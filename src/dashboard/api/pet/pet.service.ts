@@ -8,24 +8,53 @@ export const createPetService = async (data: PetRequestBody) => {
 };
 
 // Get all pets
+import { Prisma } from "@prisma/client";
+
 export const getAllPetsService = async (
   ctx: ParameterizedContext<any, any>
 ) => {
-  const { page = 1, pageSize = 10 } = ctx.query; // Get pagination parameters
+  const { page = 1, pageSize = 10, search } = ctx.query;
 
   const pageNumber = Number(page);
   const limit = Number(pageSize);
   const skip = (pageNumber - 1) * limit;
 
+  const searchQuery = typeof search === "string" ? search : undefined;
+
+  const searchFilter: Prisma.PetWhereInput = searchQuery
+    ? {
+        OR: [
+          {
+            name: {
+              contains: searchQuery,
+              mode: "insensitive",
+            },
+          },
+          {
+            breed: {
+              contains: searchQuery,
+              mode: "insensitive",
+            },
+          },
+        ],
+      }
+    : {};
+
   const [pets, totalPets] = await db.$transaction([
     db.pet.findMany({
+      where: searchFilter,
       skip,
       take: limit,
     }),
-    db.pet.count(), // Get total count of pets
+    db.pet.count({
+      where: searchFilter,
+    }),
   ]);
 
-  return { pets, meta: { pageNumber, totalPets, skip } };
+  return {
+    pets,
+    meta: { pageNumber, totalPets, skip },
+  };
 };
 
 // Get a pet by ID

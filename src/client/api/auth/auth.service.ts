@@ -100,7 +100,31 @@ export const verifyEmailService = async (token: string) => {
     },
   });
 
+  const userToken = jwt.generateToken({ userId: user.userId });
+
   return {
     message: "Email verified successfully",
+    token: userToken,
   };
+};
+
+export const getProfileService = async (userId: string) => {
+  const user = await db.user.findUnique({
+    where: { userId },
+    select: {
+      userId: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      dateOfBirth: true,
+      verified: true,
+    },
+  });
+
+  if (!user) {
+    throw new NotFoundError({ message: "User not found" });
+  }
+
+  return user;
 };

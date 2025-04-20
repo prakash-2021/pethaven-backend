@@ -7,6 +7,7 @@ import {
 } from "../_shared/middlewares/errorHandler";
 import authRoutes from "./api/accounts/accounts.router";
 import quizAnswerRouter from "./api/answer/answer.router";
+import applicationRouter from "./api/application/application.router";
 import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
 
@@ -40,6 +41,9 @@ app.use(petRouter.allowedMethods());
 
 app.use(quizAnswerRouter.routes());
 app.use(quizAnswerRouter.allowedMethods());
+
+app.use(applicationRouter.routes());
+app.use(applicationRouter.allowedMethods());
 
 app.use(notFoundHandler);
 

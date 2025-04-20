@@ -1,5 +1,6 @@
 import { ParameterizedContext } from "koa";
 import {
+  getProfileService,
   loginService,
   signupService,
   verifyEmailService,
@@ -51,4 +52,14 @@ export const verifyEmail = async (ctx: ParameterizedContext<any, any>) => {
 
   ctx.body = await verifyEmailService(token);
   ctx.status = 200;
+};
+
+export const getProfileController = async (
+  ctx: ParameterizedContext<any, any>
+) => {
+  const userId = ctx.state.user.userId;
+
+  const user = await getProfileService(userId);
+
+  ctx.body = { user };
 };

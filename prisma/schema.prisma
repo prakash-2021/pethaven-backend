@@ -22,7 +22,6 @@ enum PetSize {
 enum AdoptionStatus {
   AVAILABLE
   ADOPTED
-  PENDING
 }
 
 model User {
@@ -40,6 +39,8 @@ model User {
 
   adoptions       Adoption[]
   strayDogReports StrayDogReport[]
+
+  AdoptionApplication AdoptionApplication[]
 }
 
 model Pet {
@@ -58,6 +59,8 @@ model Pet {
 
   adoptions         Adoption[]
   answerPetMappings AnswerPetMapping[]
+
+  AdoptionApplication AdoptionApplication[]
 }
 
 model QuizQuestion {
@@ -118,4 +121,19 @@ model AnswerPetMapping {
   pet    Pet        @relation(fields: [petId], references: [petId], onDelete: Cascade)
 
   @@unique([answerId, petId]) // Prevent duplicate mappings
+}
+
+model AdoptionApplication {
+  applicationId    String   @id @default(uuid())
+  userId           String
+  petId            String
+  reason           String
+  hasPetExperience String
+  homeType         String
+  hasOtherPets     String
+  status           String   @default("PENDING")
+  submittedAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  pet  Pet  @relation(fields: [petId], references: [petId], onDelete: Cascade)
 }
