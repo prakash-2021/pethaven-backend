@@ -10,6 +10,7 @@ import applicationRouter from "./api/application/application.router";
 import userRouter from "./api/auth/auth.router";
 import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
+import storyRouter from "./api/story/story.router";
 
 const app = new Koa();
 
@@ -44,6 +45,9 @@ app.use(userRouter.allowedMethods());
 
 app.use(applicationRouter.routes());
 app.use(applicationRouter.allowedMethods());
+
+app.use(storyRouter.routes());
+app.use(storyRouter.allowedMethods());
 
 app.use(notFoundHandler);
 

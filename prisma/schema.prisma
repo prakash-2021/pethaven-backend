@@ -41,6 +41,8 @@ model User {
   strayDogReports StrayDogReport[]
 
   AdoptionApplication AdoptionApplication[]
+
+  Story Story[]
 }
 
 model Pet {
@@ -136,4 +138,19 @@ model AdoptionApplication {
 
   user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
   pet  Pet  @relation(fields: [petId], references: [petId], onDelete: Cascade)
+}
+
+model Story {
+  id               String   @id @default(uuid())
+  title            String
+  thumbnail        String
+  shortDescription String
+  content          String
+  category         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  status           String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [userId])
 }
