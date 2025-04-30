@@ -1,4 +1,9 @@
+import { config } from "dotenv";
 import { ParameterizedContext } from "koa";
+import cloudinaryUpload from "../../../_shared/config/cloudinaryUpload";
+import { db } from "../../../_shared/config/prisma";
+import { responseGenerator } from "../../../_shared/config/responseGenerator";
+import { AppError } from "../../../_shared/exceptions";
 import {
   getProfileService,
   loginService,
@@ -17,6 +22,39 @@ interface SignupBody extends LoginBody {
   phoneNumber: string;
   dateOfBirth: string;
 }
+
+// Load env
+config();
+
+export const storeImage = async (ctx: ParameterizedContext<any, any>) => {
+  const file = ctx.request.files?.[0];
+  const { userId } = ctx.params;
+
+  if (!file) throw new AppError("No image file uploaded", 400, true);
+
+  if (!userId) throw new AppError("User not authenticated", 401, true);
+
+  const { secure_url, created_at } = await cloudinaryUpload(
+    file.buffer,
+    (process.env.CLOUDINARY_FOLDER as string) + "/user"
+  );
+
+  // Update the user's image field
+  const updatedUser = await db.user.update({
+    where: { userId },
+    data: {
+      image: secure_url,
+    },
+  });
+
+  ctx.status = 201;
+  ctx.body = responseGenerator({
+    message: "Image uploaded and user updated successfully.",
+    imageUrl: secure_url,
+    createdAt: created_at,
+    user: updatedUser,
+  });
+};
 
 export const signup = async (ctx: ParameterizedContext<any, any>) => {
   const { email, password, firstName, lastName, phoneNumber, dateOfBirth } = ctx

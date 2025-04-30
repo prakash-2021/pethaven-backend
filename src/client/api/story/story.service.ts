@@ -7,6 +7,7 @@ interface StoryPayload {
   content: string;
   category: string;
   userId: string;
+  status: string;
 }
 
 interface UpdateStoryPayload {
@@ -20,42 +21,67 @@ interface UpdateStoryPayload {
 // Create a story
 export const createStoryService = async (data: StoryPayload) => {
   return await db.story.create({
-    data,
+    data: {
+      ...data,
+      status: "PENDING",
+    },
   });
 };
 
 // Get all stories (optional filtering in future)
 export const getAllStoriesService = async (ctx: any) => {
-  const { category, search } = ctx.query;
+  const { page = 1, pageSize = 10, category, search } = ctx.query;
+
+  const pageNumber = Number(page);
+  const limit = Number(pageSize);
+  const skip = (pageNumber - 1) * limit;
 
   const filters: any = {};
 
   if (category) {
-    filters.category = category.toUpperCase(); // "INSPIRATIONAL" | "LOST"
+    filters.category = category; // "INSPIRATIONAL" | "LOST"
+    filters.status = "APPROVED";
   }
 
   if (search) {
     filters.OR = [
       { title: { contains: search, mode: "insensitive" } },
       { shortDescription: { contains: search, mode: "insensitive" } },
+      { user: { firstName: { contains: search, mode: "insensitive" } } },
+      { user: { lastName: { contains: search, mode: "insensitive" } } },
     ];
   }
 
-  const stories = await db.story.findMany({
-    where: filters,
-    include: {
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-          email: true,
+  const [stories, totalStories] = await db.$transaction([
+    db.story.findMany({
+      where: filters,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+    }),
+    db.story.count({
+      where: filters,
+    }),
+  ]);
 
-  return { stories };
+  return {
+    stories,
+    meta: {
+      pageNumber,
+      pageSize: limit,
+      totalStories,
+      totalPages: Math.ceil(totalStories / limit),
+    },
+  };
 };
 
 // Get story by ID

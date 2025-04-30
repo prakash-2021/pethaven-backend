@@ -31,8 +31,15 @@ export const storeImage = async (ctx: ParameterizedContext<any, any>) => {
 
 // Create a story
 export const createStory = async (ctx: ParameterizedContext<any, any>) => {
-  const { title, thumbnail, shortDescription, content, category, userId } =
-    ctx.request.body;
+  const {
+    title,
+    thumbnail,
+    shortDescription,
+    content,
+    category,
+    userId,
+    status,
+  } = ctx.request.body;
 
   if (!userId) throw new AppError("Unauthorized", 401, true);
 
@@ -43,6 +50,7 @@ export const createStory = async (ctx: ParameterizedContext<any, any>) => {
     content,
     category,
     userId,
+    status,
   });
 
   ctx.status = 201;

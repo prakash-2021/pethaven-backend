@@ -25,17 +25,18 @@ enum AdoptionStatus {
 }
 
 model User {
-  userId            String   @id @default(uuid())
+  userId            String    @id @default(uuid())
   firstName         String
   lastName          String
-  email             String   @unique
+  email             String    @unique
   password          String
-  phoneNumber       String
+  phoneNumber       String?
   address           String?
-  dateOfBirth       DateTime
-  createdAt         DateTime @default(now())
-  verificationToken String   @default("")
-  verified          Boolean  @default(false)
+  dateOfBirth       DateTime?
+  createdAt         DateTime  @default(now())
+  verificationToken String    @default("")
+  verified          Boolean   @default(false)
+  image             String?
 
   adoptions       Adoption[]
   strayDogReports StrayDogReport[]

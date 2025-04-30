@@ -119,6 +119,7 @@ export const getProfileService = async (userId: string) => {
       phoneNumber: true,
       dateOfBirth: true,
       verified: true,
+      image: true,
     },
   });
 

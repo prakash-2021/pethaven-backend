@@ -8,8 +8,10 @@ import {
 import authRoutes from "./api/accounts/accounts.router";
 import quizAnswerRouter from "./api/answer/answer.router";
 import applicationRouter from "./api/application/application.router";
+import dashboardRouter from "./api/dashboard/dashboard.router";
 import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
+import storyRouter from "./api/story/story.router";
 
 const app = new Koa();
 
@@ -44,6 +46,12 @@ app.use(quizAnswerRouter.allowedMethods());
 
 app.use(applicationRouter.routes());
 app.use(applicationRouter.allowedMethods());
+
+app.use(storyRouter.routes());
+app.use(storyRouter.allowedMethods());
+
+app.use(dashboardRouter.routes());
+app.use(dashboardRouter.allowedMethods());
 
 app.use(notFoundHandler);
 
