@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run dev:dashboard\" \"npm run dev:client\"",
+    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:client\"",
     "dev:dashboard": "npx ts-node-dev src/dashboard/server.ts",
-    "dev:client": "npx ts-node-dev src/client/server.ts"
+    "dev:client": "npx ts-node-dev src/client/server.ts",
+    "build": "tsc",
+    "start": "concurrently \"node dist/dashboard/server.js\" \"node dist/client/server.js\""
   },
   "prisma": {
     "seed": "ts-node-dev prisma/seed.ts"
