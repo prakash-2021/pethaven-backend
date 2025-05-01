@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:client\"",
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:dashboard\"",
     "dev:dashboard": "npx ts-node-dev src/dashboard/server.ts",
     "dev:client": "npx ts-node-dev src/client/server.ts",
     "build": "tsc",
-    "start": "concurrently \"node dist/dashboard/server.js\" \"node dist/client/server.js\"",
+    "start": "concurrently \"node dist/client/server.js\" \"node dist/dashboard/server.js\"",
     "postinstall": "prisma generate"
   },
   "prisma": {
