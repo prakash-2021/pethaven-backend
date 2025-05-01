@@ -4,13 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:client\"",
+    "start": "concurrently \"npm run dev:dashboard\" \"npm run dev:client\"",
     "dev:dashboard": "npx ts-node-dev src/dashboard/server.ts",
-    "dev:client": "npx ts-node-dev src/client/server.ts",
-    "build": "npm run build:dashboard && npm run build:client",
-    "build:dashboard": "tsc -p tsconfig.json",
-    "build:client": "tsc -p tsconfig.json"
+    "dev:client": "npx ts-node-dev src/client/server.ts"
   },
   "prisma": {
     "seed": "ts-node-dev prisma/seed.ts"
