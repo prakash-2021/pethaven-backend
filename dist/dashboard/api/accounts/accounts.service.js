@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginService = exports.signupService = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const prisma_1 = require("../../../_shared/config/prisma");
 const exceptions_1 = require("../../../_shared/exceptions");
 const jwt_1 = __importDefault(require("../../../utils/jwt"));
@@ -22,7 +22,7 @@ const signupService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email
     if (existingUser) {
         throw new exceptions_1.UnauthenticatedError({ message: "User already exists" });
     }
-    const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+    const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
     yield prisma_1.db.admin.create({
         data: { email, password: hashedPassword },
     });
@@ -34,7 +34,7 @@ const loginService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email,
     if (!user) {
         throw new exceptions_1.NotFoundError({ message: "User not found" });
     }
-    const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
+    const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
     if (!isPasswordValid) {
         throw new exceptions_1.UnauthenticatedError({ message: "Invalid credentials" });
     }

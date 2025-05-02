@@ -8,7 +8,7 @@
     "dev:dashboard": "npx ts-node-dev src/dashboard/server.ts",
     "dev:client": "npx ts-node-dev src/client/server.ts",
     "build": "tsc",
-    "start": "concurrently \"node dist/client/server.js\" \"node dist/dashboard/server.js\"",
+    "start": "node dist/client/server.js",
     "postinstall": "prisma generate"
   },
   "prisma": {
@@ -25,7 +25,6 @@
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.4",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
     "change-case": "^5.4.4",
