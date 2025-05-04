@@ -2,6 +2,7 @@ import { ParameterizedContext } from "koa";
 import {
   createApplicationService,
   getAllApplicationsService,
+  getApplicationsByUserIdService,
   updateApplicationStatusService,
 } from "./application.service";
 
@@ -11,6 +12,21 @@ export const createApplication = async (
   const data = ctx.request.body;
   const application = await createApplicationService(data);
   ctx.body = application;
+};
+
+export const getApplicationsByUserId = async (
+  ctx: ParameterizedContext<any, any>
+) => {
+  const { userId } = ctx.params;
+
+  if (!userId) {
+    ctx.status = 400;
+    ctx.body = { error: "User ID is required" };
+    return;
+  }
+
+  const applications = await getApplicationsByUserIdService(userId);
+  ctx.body = applications;
 };
 
 export const getAllApplications = async (

@@ -13,6 +13,18 @@ export const createApplicationService = async (data: ApplicationInput) => {
   return await db.adoptionApplication.create({ data });
 };
 
+export const getApplicationsByUserIdService = async (userId: string) => {
+  return await db.adoptionApplication.findMany({
+    where: { userId },
+    include: {
+      pet: true, // optionally include related pet data
+    },
+    orderBy: {
+      submittedAt: "desc", // optional: sort by most recent
+    },
+  });
+};
+
 export const getAllApplicationsService = async () => {
   return await db.adoptionApplication.findMany({
     include: {
