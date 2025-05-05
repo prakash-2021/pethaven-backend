@@ -64,6 +64,7 @@ export const getAllStoriesService = async (ctx: any) => {
             firstName: true,
             lastName: true,
             email: true,
+            image: true,
           },
         },
       },
