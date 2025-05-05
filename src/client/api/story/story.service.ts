@@ -94,6 +94,7 @@ export const getStoryByIdService = async (storyId: string) => {
           firstName: true,
           lastName: true,
           email: true,
+          image: true,
         },
       },
     },
