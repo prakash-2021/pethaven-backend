@@ -135,6 +135,7 @@ export const getStoriesByUserService = async (userId: string) => {
           firstName: true,
           lastName: true,
           email: true,
+          image: true,
         },
       },
     },
