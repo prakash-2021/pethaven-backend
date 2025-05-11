@@ -44,6 +44,9 @@ model User {
   AdoptionApplication AdoptionApplication[]
 
   Story Story[]
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model Pet {
@@ -112,6 +115,9 @@ model Admin {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  sentMessages     Message[] @relation("AdminSentMessages")
+  receivedMessages Message[] @relation("AdminReceivedMessages")
 }
 
 model AnswerPetMapping {
@@ -154,4 +160,24 @@ model Story {
 
   userId String
   user   User   @relation(fields: [userId], references: [userId])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  // USER sender and receiver
+  senderUserId String?
+  senderUser   User?   @relation("SentMessages", fields: [senderUserId], references: [userId])
+
+  receiverUserId String?
+  receiverUser   User?   @relation("ReceivedMessages", fields: [receiverUserId], references: [userId])
+
+  // ADMIN sender and receiver
+  senderAdminId String?
+  senderAdmin   Admin?  @relation("AdminSentMessages", fields: [senderAdminId], references: [adminId])
+
+  receiverAdminId String?
+  receiverAdmin   Admin?  @relation("AdminReceivedMessages", fields: [receiverAdminId], references: [adminId])
 }

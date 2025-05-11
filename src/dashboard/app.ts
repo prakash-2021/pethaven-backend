@@ -9,6 +9,7 @@ import authRoutes from "./api/accounts/accounts.router";
 import quizAnswerRouter from "./api/answer/answer.router";
 import applicationRouter from "./api/application/application.router";
 import dashboardRouter from "./api/dashboard/dashboard.router";
+import chatRouter from "./api/message/message.router";
 import petRouter from "./api/pet/pet.router";
 import quizRouter from "./api/quiz/quiz.router";
 import storyRouter from "./api/story/story.router";
@@ -53,7 +54,13 @@ app.use(storyRouter.allowedMethods());
 app.use(dashboardRouter.routes());
 app.use(dashboardRouter.allowedMethods());
 
+app.use(chatRouter.routes());
+app.use(chatRouter.allowedMethods());
+
 app.use(notFoundHandler);
+
+// const server = http.createServer(app.callback());
+// initWebSocket(server);
 
 app.on("error", (err, ctx) => {
   errorHandler(ctx, err);
